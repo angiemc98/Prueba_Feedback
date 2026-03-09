@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alegra – Centro de Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+      :root {
+    --alegra-green: #00C17C;
+    --alegra-dark: #0A0F1E;
+    --alegra-mid: #111827;
+    --alegra-card: #161D2F;
+    --alegra-border: rgba(255,255,255,0.07);
+    --alegra-muted: #5A6480;
+    --alegra-text: #E8ECF4;
+    --alegra-accent: #00E98F;
+    --success: #00C17C;
+    --error: #FF5757;
+    --warn: #FFB547;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--alegra-dark);
+    color: var(--alegra-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 10% -10%, rgba(0,193,124,0.13) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 110%, rgba(0,193,124,0.08) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Grid texture ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Header ── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--alegra-border);
+    backdrop-filter: blur(12px);
+    background: rgba(10,15,30,0.6);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--alegra-green);
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; }
+
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #fff;
+    letter-spacing: -0.03em;
+  }
+
+  .logo-name span { color: var(--alegra-green); }
+
+  .header-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--alegra-muted);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--alegra-border);
+    padding: 6px 14px;
+    border-radius: 100px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 72px 24px 52px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--alegra-green);
+    margin-bottom: 22px;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--alegra-green);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--alegra-green);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--alegra-muted);
+    font-weight: 300;
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  /* ── Main layout ── */
+  .main {
+    position: relative;
+    z-index: 5;
+    max-width: 680px;
+    max-height: 280px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--alegra-card);
+    border: 1px solid var(--alegra-border);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--alegra-green), transparent);
+    opacity: 0.6;
+  }
+
+  /* ── Field groups ── */
+  .field { margin-bottom: 28px; }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--alegra-muted);
+    margin-bottom: 10px;
+  }
+
+  .field-label .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--alegra-green);
+  }
+
+  .optional-tag {
+    font-size: 0.68rem;
+    color: var(--alegra-muted);
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 2px 6px;
+    text-transform: none;
+    letter-spacing: 0;
+    font-weight: 400;
+    margin-left: auto;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--alegra-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--alegra-text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input[type="text"]::placeholder, textarea::placeholder {
+    color: var(--alegra-muted);
+    opacity: 0.7;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus {
+    border-color: rgba(0,193,124,0.5);
+    box-shadow: 0 0 0 3px rgba(0,193,124,0.08);
+    background: rgba(255,255,255,0.06);
+  }
+
+  textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+  select { cursor: pointer; }
+  select option { background: var(--alegra-mid); color: var(--alegra-text); }
+
+  /* ── Product pills ── */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .product-pill {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .product-pill input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+
+  .product-pill label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 10px;
+    border: 1px solid var(--alegra-border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.02);
+    text-align: center;
+  }
+
+  .product-pill label:hover {
+    border-color: rgba(0,193,124,0.3);
+    background: rgba(0,193,124,0.05);
+  }
+
+  .product-pill input:checked + label {
+    border-color: var(--alegra-green);
+    background: rgba(0,193,124,0.1);
+    box-shadow: 0 0 0 1px rgba(0,193,124,0.3);
+  }
+
+  .product-icon {
+    font-size: 1.5rem;
+  }
+
+  .product-name {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--alegra-text);
+    line-height: 1.3;
+  }
+
+  /* ── Char counter ── */
+  .field-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+  }
+
+  .char-count {
+    font-size: 0.72rem;
+    color: var(--alegra-muted);
+  }
+
+  .char-count.warn { color: var(--warn); }
+  .char-count.error { color: var(--error); }
+
+  /* ── Submit button ── */
+  .btn-submit {
+    width: 100%;
+    padding: 17px;
+    background: var(--alegra-green);
+    color: #0A0F1E;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    background: var(--alegra-accent);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(0,193,124,0.35);
+  }
+
+  .btn-submit:active:not(:disabled) { transform: translateY(0); }
+
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-submit .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: #0A0F1E;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+
+  .btn-submit.loading .btn-label { display: none; }
+  .btn-submit.loading .spinner { display: block; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Success state ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-screen.show { display: block; }
+  .form-body.hidden { display: none; }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    background: rgba(0,193,124,0.15);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 24px;
+    border: 1px solid rgba(0,193,124,0.3);
+  }
+
+  .success-icon svg { width: 32px; height: 32px; }
+
+  .success-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .success-sub {
+    color: var(--alegra-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .btn-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: 1px solid var(--alegra-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--alegra-text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reset:hover {
+    border-color: rgba(0,193,124,0.4);
+    color: var(--alegra-green);
+  }
+
+  /* ── Error message ── */
+  .field-error {
+    font-size: 0.78rem;
+    color: var(--error);
+    margin-top: 6px;
+    display: none;
+  }
+
+  .field-error.show { display: block; }
+
+  input.invalid, textarea.invalid, select.invalid {
+    border-color: rgba(255,87,87,0.5) !important;
+  }
+
+  /* ── Footer ── */
+  .form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.78rem;
+    color: var(--alegra-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .form-footer svg { width: 13px; height: 13px; opacity: 0.6; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--alegra-border);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--alegra-green);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--alegra-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    header { padding: 20px 20px; }
+    .card { padding: 28px 20px; }
+    .product-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stats-bar { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    h1 { font-size: 2rem; }
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero { animation: fadeUp 0.6s ease both; }
+  .stats-bar { animation: fadeUp 0.6s 0.1s ease both; }
+  .card { animation: fadeUp 0.6s 0.15s ease both; }
+
+    </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0A0F1E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <span class="logo-name">Alegra <span>Feedback</span></span>
+  </a>
+  <span class="header-tag">Beta Feed</span>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Tu opinión nos impulsa</div>
+  <h1>Cuéntanos tu<br><em>experiencia</em></h1>
+  <p class="hero-sub">Cada comentario nos ayuda a construir mejores productos para ti. Comparte tu experiencia en menos de 2 minutos.</p>
+</div>
+
+<main class="main">
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Productos</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">IA</div>
+      <div class="stat-label">Análisis auto</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#00C17C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="success-title">¡Gracias por tu feedback!</div>
+      <p class="success-sub">Tu comentario fue registrado exitosamente.</p>
+      <button class="btn-reset" onclick="resetForm()">Enviar otro feedback</button>
+    </div>
+
+    <div class="form-body" id="formBody">
+      <form id="feedbackForm" novalidate>
+        <div class="field">
+          <div class="field-label"><span class="dot"></span>Nombre <span class="optional-tag">opcional</span></div>
+          <input type="text" id="nombre" placeholder="Ej: María García" maxlength="80">
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="dot"></span>Producto</div>
+          <div class="product-grid">
+            <div class="product-pill">
+              <input type="radio" id="pos" name="producto" value="Alegra POS">
+              <label for="pos">🛒<span class="product-name">Alegra POS</span></label>
+            </div>
+            <div class="product-pill">
+              <input type="radio" id="cont" name="producto" value="Alegra Contabilidad">
+              <label for="cont">📊<span class="product-name">Alegra Cont.</span></label>
+            </div>
+            <div class="product-pill">
+              <input type="radio" id="nom" name="producto" value="Alegra Nómina">
+              <label for="nom">💼<span class="product-name">Alegra Nómina</span></label>
+            </div>
+          </div>
+          <div class="field-error" id="productoError">Por favor selecciona un producto.</div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span class="dot"></span>Tu comentario</div>
+          <textarea id="comentario" placeholder="Cuéntanos tu experiencia..." maxlength="1000"></textarea>
+          <div class="field-footer"><span class="char-count" id="charCount">0 / 1000</span></div>
+          <div class="field-error" id="comentarioError">Mínimo 10 caracteres.</div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-label">Enviar Feedback →</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvQYnVBZvatVhfESjc9S4UiaposdfGctKQMR2472s9yna8qCnN1UxuA4zVIE-wiB7D/exec';
+
+    const form = document.getElementById('feedbackForm');
+    const comentario = document.getElementById('comentario'); // Referencia al textarea
+    const charCount = document.getElementById('charCount');   // Referencia al numerito
+    const successScreen = document.getElementById('successScreen');
+    const formBody = document.getElementById('formBody');
+
+    // --- ESTA ES LA PARTE QUE FALTABA ---
+    // Escucha cada vez que el usuario escribe (evento 'input')
+    comentario.addEventListener('input', () => {
+        const longitud = comentario.value.length;
+        charCount.textContent = `${longitud} / 1000`;
+        
+        // Opcional: Cambiar color si se acerca al límite
+        if (longitud > 900) {
+            charCount.style.color = "var(--warn)";
+        } else if (longitud >= 1000) {
+            charCount.style.color = "var(--error)";
+        } else {
+            charCount.style.color = "var(--alegra-muted)";
+        }
+    });
+    // -------------------------------------
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const producto = document.querySelector('input[name="producto"]:checked');
+        const comentTxt = comentario.value.trim();
+
+        if(!producto || comentTxt.length < 10) {
+            document.getElementById('productoError').classList.toggle('show', !producto);
+            document.getElementById('comentarioError').classList.toggle('show', comentTxt.length < 10);
+            return;
+        }
+
+        formBody.classList.add('hidden');
+        successScreen.classList.add('show');
+
+        try {
+            await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    nombre: document.getElementById('nombre').value || 'Anónimo',
+                    producto: producto.value,
+                    comentario: comentTxt,
+                    timestamp: new Date().toISOString()
+                })
+            });
+        } catch (err) { console.error("Error:", err); }
+    });
+
+    function resetForm() {
+        form.reset();
+        charCount.textContent = "0 / 1000"; // Reiniciar contador visual
+        successScreen.classList.remove('show');
+        formBody.classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
